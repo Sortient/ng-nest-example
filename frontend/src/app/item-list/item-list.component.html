@@ -1,0 +1,68 @@
+<mat-card class="form-card">
+  <mat-card-header>
+    <mat-card-title>Add New Item</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" class="item-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" placeholder="my-app.jar">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Version</mat-label>
+        <input matInput formControlName="version" placeholder="1.0.0">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="type">
+          @for (type of itemTypes; track type) {
+            <mat-option [value]="type">{{ type }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Location (URL)</mat-label>
+        <input matInput formControlName="location" placeholder="https://my-repo.com/item">
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="itemForm.invalid">Add Item</button>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+@if (items().length > 0) {
+  <table mat-table [dataSource]="items()" class="mat-elevation-z8 item-table">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let item"> {{item.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="version">
+      <th mat-header-cell *matHeaderCellDef> Version </th>
+      <td mat-cell *matCellDef="let item"> {{item.version}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef> Type </th>
+      <td mat-cell *matCellDef="let item"> {{item.type}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="location">
+      <th mat-header-cell *matHeaderCellDef> Location </th>
+      <td mat-cell *matCellDef="let item"> <a [href]="item.location" target="_blank">{{item.location}}</a> </td>
+    </ng-container>
+    
+    <ng-container matColumnDef="createdAt">
+      <th mat-header-cell *matHeaderCellDef> Created </th>
+      <td mat-cell *matCellDef="let item"> {{item.createdAt | date:'short'}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+} @else {
+  <p class="empty-message">No items in the database. Add one above!</p>
+}

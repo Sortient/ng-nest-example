@@ -1,14 +1,12 @@
-.helloWorld {
-    mat-card {
-        margin: 20px;
-        padding: 20px;
-        text-align: center;
-    }
+.greetingContainer {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 0;
+}
 
-    &__content {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        width: 40%;
-    }
+mat-card {
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
+    max-width: 1000px;
+    width: 90%;
 }

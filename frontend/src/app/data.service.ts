@@ -1,22 +1,35 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
+import { map, catchError, retry, timeout } from 'rxjs/operators';
+import { Item } from './item.interface';
 
 const API_URL = 'http://localhost:3000/api';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DataService {
   private http = inject(HttpClient);
 
-  getGreeting(): Observable<string> {
-    return this.http.get<{ message: string }>(`${API_URL}/hello`).pipe(
-      map(response => response.message),
+  getItems(): Observable<Item[]> {
+    return this.http.get<Item[]>(`${API_URL}/items`).pipe(
       catchError(error => {
-        console.error('Error fetching greeting:', error);
-        return 'Error fetching greeting';
+        console.error('Error fetching items:', error);
+        return of([]);
+      })
+    )
+  }
+
+  createItem(itemData: Omit<Item, 'id' | 'createdAt'>): Observable<Item> {
+    return this.http.post<Item>(`${API_URL}/items`, itemData).pipe(
+      catchError((error: HttpErrorResponse) => {
+        let errorMessage = 'An unknown server error occurred.';
+        if (error.error && typeof error.error.message === 'string') {
+          errorMessage = error.error.message;
+        }
+
+        return throwError(() => new Error(errorMessage));
       })
     );
   }

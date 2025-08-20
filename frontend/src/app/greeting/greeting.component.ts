@@ -11,10 +11,4 @@ import { DataService } from '../data.service';
 })
 export class GreetingComponent {
   private dataService = inject(DataService);
-
-  greeting = toSignal(
-    this.dataService.getGreeting(), {
-      initialValue: 'Loading message from server...'
-    }
-  );
 }

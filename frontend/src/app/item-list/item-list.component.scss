@@ -1,0 +1,20 @@
+.form-card {
+  max-width: 800px;
+  margin-bottom: 2rem;
+}
+
+.item-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.item-table {
+  width: 100%;
+}
+
+.empty-message {
+  text-align: center;
+  padding: 2rem;
+  font-style: italic;
+}
