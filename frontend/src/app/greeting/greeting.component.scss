@@ -1,0 +1,14 @@
+.helloWorld {
+    mat-card {
+        margin: 20px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    &__content {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 40%;
+    }
+}
