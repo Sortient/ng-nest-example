@@ -4,6 +4,8 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Item } from '../items/item.entity';
 import { ItemsModule } from './items/items.module';
+import { ConfigModule } from '@nestjs/config';
+import { NexusService } from './nexus/nexus.service';
 
 @Module({
   imports: [
@@ -14,6 +16,7 @@ import { ItemsModule } from './items/items.module';
       synchronize: true,
     }),
     ItemsModule,
+    ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [AppController],
   providers: [AppService],

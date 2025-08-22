@@ -18,7 +18,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   templateUrl: './item-list.component.html',
   styleUrl: './item-list.component.scss'
 })
-export class ItemListComponent {
+export class ItemListComponent implements OnInit {
   private dataService = inject(DataService);
   private fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
@@ -27,13 +27,15 @@ export class ItemListComponent {
   itemForm: FormGroup;
   itemTypes = Object.values(ItemType);
   displayedColumns: string[] = ['name', 'version', 'type', 'location', 'createdAt'];
+  
+  selectedFile: File | null = null;
 
   constructor() {
     this.itemForm = this.fb.group({
       name: ['', Validators.required],
       version: ['', Validators.required],
       type: [null, Validators.required],
-      location: ['', [Validators.required, Validators.pattern('https?://.+')]],
+      file: [null, Validators.required] 
     });
   }
 
@@ -47,20 +49,33 @@ export class ItemListComponent {
     });
   }
 
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+      this.itemForm.patchValue({ file: this.selectedFile });
+    }
+  }
+
   onSubmit(): void {
-    if (this.itemForm.invalid) {
+    if (this.itemForm.invalid || !this.selectedFile) {
       return;
     }
     
-    this.dataService.createItem(this.itemForm.value).subscribe({
+    const formData = new FormData();
+    formData.append('name', this.itemForm.get('name')!.value ?? '');
+    formData.append('version', this.itemForm.get('version')!.value ?? '');
+    formData.append('type', this.itemForm.get('type')!.value ?? '');
+    formData.append('file', this.selectedFile, this.selectedFile.name);
+
+    this.dataService.createItem(formData).subscribe({
       next: (newItem) => {
         this.items.update(currentItems => [...currentItems, newItem]);
         this.itemForm.reset();
+        this.selectedFile = null;
       },
       error: (err) => {
-        this.snackBar.open(err.message, 'Close', {
-          duration: 5000,
-        });
+        this.snackBar.open(err.message, 'Close', { duration: 5000 });
       }
     });
   }

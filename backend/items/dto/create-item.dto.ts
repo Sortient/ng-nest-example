@@ -12,8 +12,4 @@ export class CreateItemDto {
 
   @IsEnum(ItemType)
   type: ItemType;
-
-  @IsUrl()
-  @IsNotEmpty()
-  location: string;
 }

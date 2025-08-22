@@ -21,16 +21,7 @@ export class DataService {
     )
   }
 
-  createItem(itemData: Omit<Item, 'id' | 'createdAt'>): Observable<Item> {
-    return this.http.post<Item>(`${API_URL}/items`, itemData).pipe(
-      catchError((error: HttpErrorResponse) => {
-        let errorMessage = 'An unknown server error occurred.';
-        if (error.error && typeof error.error.message === 'string') {
-          errorMessage = error.error.message;
-        }
-
-        return throwError(() => new Error(errorMessage));
-      })
-    );
+  createItem(formData: FormData): Observable<Item> {
+    return this.http.post<Item>(`${API_URL}/items`, formData);
   }
 }
